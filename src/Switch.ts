@@ -1,4 +1,4 @@
-import { Service, PlatformAccessory } from 'homebridge';
+import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { EnvySecurityPlatform } from './platform';
 
@@ -49,7 +49,7 @@ export class Switch {
     // create handlers for required characteristics
     this.service.getCharacteristic(this.platform.Characteristic.On)
       .onGet(this.handleOnGet.bind(this))
-      .onSet(async (value) => { this.handleOnSet.bind(this, Boolean(value)) });
+      .onSet(this.handleOnSet.bind(this));
 
   }
 
@@ -66,7 +66,8 @@ export class Switch {
   /**
    * Handle requests to set the "On" characteristic
    */
-  handleOnSet(value : boolean) : void {
+  handleOnSet(value : CharacteristicValue) : void {
+    value = Boolean(value)
     //this.accessory.context.device.log.debug('handleOnSet:', value);
     //this.accessory.context.device.log.debug('Zone:', this.accessory.context.device.zone);
 

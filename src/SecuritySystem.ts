@@ -1,4 +1,4 @@
-import { Service, PlatformAccessory } from 'homebridge';
+import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { EnvySecurityPlatform } from './platform';
 
@@ -46,7 +46,7 @@ export class SecuritySystem {
 
     this.service.getCharacteristic(this.platform.Characteristic.SecuritySystemTargetState)
       .onGet(this.handleSecuritySystemTargetStateGet.bind(this))
-      .onSet(async (value) => { this.handleSecuritySystemTargetStateSet.bind(this, Number(value)) });
+      .onSet(this.handleSecuritySystemTargetStateSet.bind(this));
 
   }
 
@@ -82,7 +82,8 @@ export class SecuritySystem {
   /**
    * Handle requests to set the "Security System Target State" characteristic
    */
-  handleSecuritySystemTargetStateSet(value: number) : void {
+  handleSecuritySystemTargetStateSet(value: CharacteristicValue) : void {
+    value = Number(value)
     //this.accessory.context.device.log.debug('Triggered handleSecuritySystemTargetStateSet:', value);
     //this.accessory.context.device.log.debug('Partition: ', this.getId());
 

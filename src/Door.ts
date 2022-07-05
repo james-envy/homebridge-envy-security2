@@ -1,4 +1,4 @@
-import { Service, PlatformAccessory } from 'homebridge';
+import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { EnvySecurityPlatform } from './platform';
 
@@ -57,10 +57,10 @@ export class Door {
 
     this.service.getCharacteristic(this.platform.Characteristic.TargetPosition)
       .onGet(this.handleTargetPositionGet.bind(this))
-      .onSet(async (value) => { this.handleTargetPositionSet.bind(this, Number(value)) });
+      .onSet(this.handleTargetPositionSet.bind(this));
   }
 
-  /**
+    /**
      * Handle requests to get the current value of the "Current Position" characteristic
      */
   handleCurrentPositionGet() : number {
@@ -93,7 +93,8 @@ export class Door {
   /**
    * Handle requests to set the "Target Position" characteristic
    */
-  handleTargetPositionSet(value : number) : void {
+  handleTargetPositionSet(value: CharacteristicValue) : void {
+    value = Number(value)
     //this.accessory.context.device.log.debug('handleTargetPositionSet:', value);
     //this.accessory.context.device.log.debug('Zone:', this.accessory.context.device.zone);
 

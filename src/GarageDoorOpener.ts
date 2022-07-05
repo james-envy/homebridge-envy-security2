@@ -1,4 +1,4 @@
-import { Service, PlatformAccessory } from 'homebridge';
+import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { EnvySecurityPlatform } from './platform';
 
@@ -54,7 +54,7 @@ export class GarageDoorOpener {
 
     this.service.getCharacteristic(this.platform.Characteristic.TargetDoorState)
       .onGet(this.handleTargetDoorStateGet.bind(this))
-      .onSet(async (value) => { this.handleTargetDoorStateSet.bind(this, Number(value)) });
+      .onSet(this.handleTargetDoorStateSet.bind(this));
 
     this.service.getCharacteristic(this.platform.Characteristic.ObstructionDetected)
       .onGet(this.handleObstructionDetectedGet.bind(this));
@@ -84,7 +84,8 @@ export class GarageDoorOpener {
   /**
    * Handle requests to set the "Target Door State" characteristic
    */
-  handleTargetDoorStateSet(value : number) : void {
+  handleTargetDoorStateSet(value: CharacteristicValue) : void {
+    value = Number(value)
     //this.accessory.context.device.log.debug('handleTargetDoorStatSet:', value);
     //this.accessory.context.device.log.debug('Zone:', this.accessory.context.device.zone);
 
