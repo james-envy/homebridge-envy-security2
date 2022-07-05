@@ -23,8 +23,8 @@ export class Task {
   ) {
 
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
+    this.accessory.getService(this.platform.Service.AccessoryInformation)?.
+      setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
       .setCharacteristic(this.platform.Characteristic.Model, 'Task')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
@@ -43,14 +43,14 @@ export class Task {
     // create handlers for required characteristics
     this.service.getCharacteristic(this.platform.Characteristic.On)
       .onGet(this.handleOnGet.bind(this))
-      .onSet(this.handleOnSet.bind(this));
+      .onSet(async (value) => { this.handleOnSet.bind(this, Boolean(value)) });
 
   }
 
   /**
    * Handle requests to get the current value of the "On" characteristic
    */
-  handleOnGet() {
+  handleOnGet() : false {
     //this.accessory.context.device.log.debug('handleOnGet:', this.on);
 
     // set this to a valid value for On
@@ -60,7 +60,7 @@ export class Task {
   /**
    * Handle requests to set the "On" characteristic
    */
-  handleOnSet(value) {
+  handleOnSet(value: boolean) : void {
     //this.accessory.context.device.log.debug('handleOnSet:', value);
 
     if (value) {
@@ -70,7 +70,7 @@ export class Task {
     }
   }
 
-  doUpdate() {
+  doUpdate() : void {
     //this.platform.log.info(this.getId() +' - doUpdate: ');
 
     const on = this.on;
@@ -81,7 +81,7 @@ export class Task {
     }
   }
 
-  getId() {
+  getId() : number {
     return this.accessory.context.device.id;
   }
 }

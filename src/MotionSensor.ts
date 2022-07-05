@@ -22,8 +22,8 @@ export class MotionSensor {
   ) {
 
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
+    this.accessory.getService(this.platform.Service.AccessoryInformation)?.
+      setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
       .setCharacteristic(this.platform.Characteristic.Model, 'Motion Sensor')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
@@ -48,7 +48,7 @@ export class MotionSensor {
   /**
    * Handle requests to get the current value of the "Motion Detected" characteristic
    */
-  handleMotionDetectedGet() {
+  handleMotionDetectedGet() : boolean {
     //this.accessory.context.device.log.debug('Triggered handleMotionDetectedGet:', this.motionDetected);
 
     // set this to a valid value for MotionDetected
@@ -57,13 +57,13 @@ export class MotionSensor {
     return currentValue;
   }
 
-  setMotionDetected(state: boolean) {
+  setMotionDetected(state: boolean) : void {
     //this.platform.log.debug('Triggered setMotionDetected:', state);
     this.motionDetected = state;
     this.service.getCharacteristic(this.platform.Characteristic.MotionDetected).setValue(state);
   }
 
-  getId() {
+  getId() : number {
     return this.accessory.context.device.id;
   }
 }

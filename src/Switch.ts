@@ -29,8 +29,8 @@ export class Switch {
   ) {
 
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
+    this.accessory.getService(this.platform.Service.AccessoryInformation)?.
+      setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
       .setCharacteristic(this.platform.Characteristic.Model, 'Switch')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
@@ -49,14 +49,14 @@ export class Switch {
     // create handlers for required characteristics
     this.service.getCharacteristic(this.platform.Characteristic.On)
       .onGet(this.handleOnGet.bind(this))
-      .onSet(this.handleOnSet.bind(this));
+      .onSet(async (value) => { this.handleOnSet.bind(this, Boolean(value)) });
 
   }
 
   /**
    * Handle requests to get the current value of the "On" characteristic
    */
-  handleOnGet() {
+  handleOnGet() : boolean {
     //this.accessory.context.device.log.debug('handleOnGet:', this.on);
 
     // set this to a valid value for On
@@ -66,7 +66,7 @@ export class Switch {
   /**
    * Handle requests to set the "On" characteristic
    */
-  handleOnSet(value) {
+  handleOnSet(value : boolean) : void {
     //this.accessory.context.device.log.debug('handleOnSet:', value);
     //this.accessory.context.device.log.debug('Zone:', this.accessory.context.device.zone);
 
@@ -97,7 +97,7 @@ export class Switch {
     }
   }
 
-  stopWaiting(_this: this) {
+  stopWaiting(_this: this) : void {
     //_this.platform.log.info(this.getId() +' - stopWaiting');
     _this.waiting = false;
     if (this.outputState !== false) {
@@ -106,7 +106,7 @@ export class Switch {
     _this.doUpdate();
   }
 
-  setZoneState(state: boolean) {
+  setZoneState(state: boolean) : void {
     //this.platform.log.info(this.getId() +' - setZoneState:', state);
     if (state !== this.zoneState) {
       this.zoneState = state;
@@ -114,7 +114,7 @@ export class Switch {
     }
   }
 
-  setOutputState(state: boolean) {
+  setOutputState(state: boolean) : void {
     //this.platform.log.info(this.getId() +' - setOutputState:', state);
     if (state !== this.outputState) {
       this.outputState = state;
@@ -125,7 +125,7 @@ export class Switch {
     }
   }
 
-  abort() {
+  abort() : void {
     if (this.waiting === true) {
       clearTimeout(this.timeout);
       this.waiting = false;
@@ -133,7 +133,7 @@ export class Switch {
     this.platform.client.write('Security_system::OutputOff(OutputNumber = ' + this.getId() + ')\n');
   }
 
-  doUpdate() {
+  doUpdate() : void {
     //this.platform.log.info(this.getId() +' - doUpdate: ' + (this.waiting ? '' : '!') + 'waiting');
     let on;
 
@@ -153,7 +153,7 @@ export class Switch {
     }
   }
 
-  getId() {
+  getId() : number {
     return this.accessory.context.device.id;
   }
 }

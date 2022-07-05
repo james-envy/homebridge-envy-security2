@@ -94,12 +94,12 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
     });
   }
 
-  on_timeout(_this: this) {
+  on_timeout(_this: this) : void {
     _this.log.info('TIMEOUT');
     _this.client.destroy();
   }
 
-  on_close(_this: this) {
+  on_close(_this: this) : void {
     _this.log.info('CLOSE');
     setTimeout(() => {
       //_this.log.info('alarmType:', _this.config.alarmType);
@@ -113,15 +113,15 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
     }, 10000);
   }
 
-  on_error(_this: this) {
+  on_error(_this: this) : void {
     _this.log.info('ERROR');
   }
 
-  on_connect(_this: this) {
+  on_connect(_this: this) : void {
     _this.log.info('CONNECTED');
   }
 
-  on_ready(_this: this) {
+  on_ready(_this: this) : void {
     _this.log.info('READY');
     _this.client.write('Security_system::UpdateSecurityStatus(ControllerType = ' + _this.config.alarmType + ', ControllerAddress = '
       + _this.config.securityAddress + ':' + _this.config.securityPort + ', ReadyZones = ' + _this.config.readyZones
@@ -131,7 +131,7 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
     }, 15000);
   }
 
-  on_data(_this: this, data: Buffer) {
+  on_data(_this: this, data: Buffer) : void {
     _this.client_data += data;
     let i = _this.client_data.indexOf('\n');
     while (i !== -1) {
@@ -277,7 +277,7 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
   * This function is invoked when homebridge restores cached accessories from disk at startup.
   * It should be used to setup event handlers for characteristics and update respective values.
   */
-  configureAccessory(accessory: PlatformAccessory) {
+  configureAccessory(accessory: PlatformAccessory) : void {
     //this.log.info('Loading accessory from cache:', accessory.displayName);
 
     // add the restored accessory to the accessories cache so we can track if it has already been registered
@@ -289,7 +289,7 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
   * Accessories must only be registered once, previously created accessories
   * must not be registered again to prevent "duplicate UUID" errors.
   */
-  discoverDevices() {
+  discoverDevices() : void {
 
     // generate a unique id for the accessory this should be generated from
     // something globally unique, but constant, for example, the device serial
@@ -574,12 +574,12 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
       }
     }
 
-    for (const partition in this.partition_zones) {
+    //for (const partition in this.partition_zones) {
       //this.log.info('Mapped partition:', partition, ' name: ', this.partitions[partition].accessory.context.device.displayName);
-      for (const zone in this.partition_zones[partition]) {
+      //for (const zone in this.partition_zones[partition]) {
         //this.log.info('Mapped zone:', zone, ' name: ', this.zones[zone].accessory.context.device.displayName);
-      }
-    }
+      //}
+    //}
   }
 }
 

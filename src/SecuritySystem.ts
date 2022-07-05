@@ -23,8 +23,8 @@ export class SecuritySystem {
   ) {
 
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
+    this.accessory.getService(this.platform.Service.AccessoryInformation)?.
+      setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
       .setCharacteristic(this.platform.Characteristic.Model, 'Security System')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
@@ -46,14 +46,14 @@ export class SecuritySystem {
 
     this.service.getCharacteristic(this.platform.Characteristic.SecuritySystemTargetState)
       .onGet(this.handleSecuritySystemTargetStateGet.bind(this))
-      .onSet(this.handleSecuritySystemTargetStateSet.bind(this));
+      .onSet(async (value) => { this.handleSecuritySystemTargetStateSet.bind(this, Number(value)) });
 
   }
 
   /**
    * Handle requests to get the current value of the "Security System Current State" characteristic
    */
-  handleSecuritySystemCurrentStateGet() {
+  handleSecuritySystemCurrentStateGet() : number {
     //this.accessory.context.device.log.debug('Triggered handleSecuritySystemCurrentStateGet:', this.currentState);
 
     // set this to a valid value for SecuritySystemCurrentState
@@ -68,7 +68,7 @@ export class SecuritySystem {
   /**
    * Handle requests to get the current value of the "Security System Target State" characteristic
    */
-  handleSecuritySystemTargetStateGet() {
+  handleSecuritySystemTargetStateGet() : number {
     //this.accessory.context.device.log.debug('Triggered handleSecuritySystemTargetStateGet:', this.targetState);
 
     // set this to a valid value for SecuritySystemTargetState
@@ -82,7 +82,7 @@ export class SecuritySystem {
   /**
    * Handle requests to set the "Security System Target State" characteristic
    */
-  handleSecuritySystemTargetStateSet(value) {
+  handleSecuritySystemTargetStateSet(value: number) : void {
     //this.accessory.context.device.log.debug('Triggered handleSecuritySystemTargetStateSet:', value);
     //this.accessory.context.device.log.debug('Partition: ', this.getId());
 
@@ -105,7 +105,7 @@ export class SecuritySystem {
     }
   }
 
-  setSecuritySystemCurrentState(state) {
+  setSecuritySystemCurrentState(state: number) : void {
     //this.platform.log.debug('Triggered setSecuritySystemCurrentState:', state);
 
     this.currentState = state;
@@ -115,18 +115,18 @@ export class SecuritySystem {
     }
   }
 
-  setSecuritySystemTargetState(state) {
+  setSecuritySystemTargetState(state : number) : void {
     //this.platform.log.debug('Triggered setSecuritySystemTargetState:', state);
 
     this.targetState = state;
     this.service.getCharacteristic(this.platform.Characteristic.SecuritySystemTargetState).setValue(state);
   }
 
-  getId() {
+  getId() : number {
     return this.accessory.context.device.id;
   }
 
-  getCode() {
+  getCode() : string {
     return this.accessory.context.device.code;
   }
 }

@@ -31,8 +31,8 @@ export class Door {
   ) {
 
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
+    this.accessory.getService(this.platform.Service.AccessoryInformation)?.
+      setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
       .setCharacteristic(this.platform.Characteristic.Model, 'Door')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
@@ -57,14 +57,13 @@ export class Door {
 
     this.service.getCharacteristic(this.platform.Characteristic.TargetPosition)
       .onGet(this.handleTargetPositionGet.bind(this))
-      .onSet(this.handleTargetPositionSet.bind(this));
-
+      .onSet(async (value) => { this.handleTargetPositionSet.bind(this, Number(value)) });
   }
 
   /**
      * Handle requests to get the current value of the "Current Position" characteristic
      */
-  handleCurrentPositionGet() {
+  handleCurrentPositionGet() : number {
     //this.accessory.context.device.log.debug('handleCurrentPositionGet:', this.currentPosition);
 
     // set this to a valid value for CurrentPosition
@@ -74,7 +73,7 @@ export class Door {
   /**
    * Handle requests to get the current value of the "Position State" characteristic
    */
-  handlePositionStateGet() {
+  handlePositionStateGet() : number {
     //this.accessory.context.device.log.debug('handlePositionStateGet:', this.positionState);
 
     // set this to a valid value for PositionState
@@ -84,7 +83,7 @@ export class Door {
   /**
    * Handle requests to get the current value of the "Target Position" characteristic
    */
-  handleTargetPositionGet() {
+  handleTargetPositionGet() : number {
     //this.accessory.context.device.log.debug('handleTargetPositionGet:', this.targetPosition);
 
     // set this to a valid value for TargetPosition
@@ -94,7 +93,7 @@ export class Door {
   /**
    * Handle requests to set the "Target Position" characteristic
    */
-  handleTargetPositionSet(value) {
+  handleTargetPositionSet(value : number) : void {
     //this.accessory.context.device.log.debug('handleTargetPositionSet:', value);
     //this.accessory.context.device.log.debug('Zone:', this.accessory.context.device.zone);
 
@@ -143,13 +142,13 @@ export class Door {
     }
   }
 
-  stopWaiting(_this: this) {
+  stopWaiting(_this: this) : void {
     //_this.platform.log.info(this.getId() +' - stopWaiting');
     _this.waiting = false;
     _this.doUpdate();
   }
 
-  setZoneState(state: boolean) {
+  setZoneState(state: boolean) : void {
     //this.platform.log.info(this.getId() +' - setZoneState:', state);
     if (state !== this.zoneState) {
       this.zoneState = state;
@@ -157,7 +156,7 @@ export class Door {
     }
   }
 
-  setOutputState(state: boolean) {
+  setOutputState(state: boolean) : void {
     //this.platform.log.info(this.getId() +' - setOutputState:', state);
     if (state !== this.outputState) {
       this.outputState = state;
@@ -168,7 +167,7 @@ export class Door {
     }
   }
 
-  abort() {
+  abort() : void {
     if (this.waiting === true) {
       clearTimeout(this.timeout);
       this.waiting = false;
@@ -176,7 +175,7 @@ export class Door {
     this.platform.client.write('Security_system::OutputOff(OutputNumber = ' + this.getId() + ')\n');
   }
 
-  doUpdate() {
+  doUpdate() : void {
     //this.platform.log.info(this.getId() +' - doUpdate: ' + (this.waiting ? '' : '!') + 'waiting');
     let current;
     let target;
@@ -215,7 +214,7 @@ export class Door {
     }
   }
 
-  getId() {
+  getId() : number {
     return this.accessory.context.device.id;
   }
 }

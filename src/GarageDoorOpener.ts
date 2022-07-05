@@ -31,8 +31,8 @@ export class GarageDoorOpener {
   ) {
 
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
+    this.accessory.getService(this.platform.Service.AccessoryInformation)?.
+      setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
       .setCharacteristic(this.platform.Characteristic.Model, 'Garage Door Opener')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
@@ -54,7 +54,7 @@ export class GarageDoorOpener {
 
     this.service.getCharacteristic(this.platform.Characteristic.TargetDoorState)
       .onGet(this.handleTargetDoorStateGet.bind(this))
-      .onSet(this.handleTargetDoorStateSet.bind(this));
+      .onSet(async (value) => { this.handleTargetDoorStateSet.bind(this, Number(value)) });
 
     this.service.getCharacteristic(this.platform.Characteristic.ObstructionDetected)
       .onGet(this.handleObstructionDetectedGet.bind(this));
@@ -64,7 +64,7 @@ export class GarageDoorOpener {
   /**
      * Handle requests to get the current value of the "Current Door State" characteristic
      */
-  handleCurrentDoorStateGet() {
+  handleCurrentDoorStateGet() : number {
     //this.accessory.context.device.log.debug('handleCurrentDoorStateGet:', this.currentDoorState);
 
     // set this to a valid value for CurrentDoorState
@@ -74,7 +74,7 @@ export class GarageDoorOpener {
   /**
    * Handle requests to get the current value of the "Target Door State" characteristic
    */
-  handleTargetDoorStateGet() {
+  handleTargetDoorStateGet() : number {
     //this.accessory.context.device.log.debug('handleTargetDoorStateGet:', this.targetDoorState);
 
     // set this to a valid value for TargetDoorState
@@ -84,7 +84,7 @@ export class GarageDoorOpener {
   /**
    * Handle requests to set the "Target Door State" characteristic
    */
-  handleTargetDoorStateSet(value) {
+  handleTargetDoorStateSet(value : number) : void {
     //this.accessory.context.device.log.debug('handleTargetDoorStatSet:', value);
     //this.accessory.context.device.log.debug('Zone:', this.accessory.context.device.zone);
 
@@ -135,20 +135,20 @@ export class GarageDoorOpener {
   /**
   * Handle requests to get the current value of the "Obstruction Detected" characteristic
   */
-  handleObstructionDetectedGet() {
+  handleObstructionDetectedGet() : boolean {
     //this.accessory.context.device.log.debug('handleObstructionDetectedGet:', this.obstructionDetected);
 
     // set this to a valid value for ObstructionDetected
     return this.obstructionDetected;
   }
 
-  stopWaiting(_this: this) {
+  stopWaiting(_this: this) : void {
     //_this.platform.log.info(this.getId() +' - stopWaiting');
     _this.waiting = false;
     _this.doUpdate();
   }
 
-  setZoneState(state: boolean) {
+  setZoneState(state: boolean) : void {
     //this.platform.log.info(this.getId() +' - setZoneState:', state);
     if (state !== this.zoneState) {
       this.zoneState = state;
@@ -156,7 +156,7 @@ export class GarageDoorOpener {
     }
   }
 
-  setOutputState(state: boolean) {
+  setOutputState(state: boolean) : void {
     //this.platform.log.info(this.getId() +' - setOutputState:', state);
     if (state !== this.outputState) {
       this.outputState = state;
@@ -167,7 +167,7 @@ export class GarageDoorOpener {
     }
   }
 
-  abort() {
+  abort() : void {
     if (this.waiting === true) {
       clearTimeout(this.timeout);
       this.waiting = false;
@@ -175,7 +175,7 @@ export class GarageDoorOpener {
     this.platform.client.write('Security_system::OutputOff(OutputNumber = ' + this.getId() + ')\n');
   }
 
-  doUpdate() {
+  doUpdate() : void {
     //this.platform.log.info(this.getId() +' - doUpdate: ' + (this.waiting ? '' : '!') + 'waiting');
     let current;
     let target;
@@ -208,7 +208,7 @@ export class GarageDoorOpener {
     }
   }
 
-  getId() {
+  getId() : number {
     return this.accessory.context.device.id;
   }
 }

@@ -22,8 +22,8 @@ export class ContactSensor {
   ) {
 
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
+    this.accessory.getService(this.platform.Service.AccessoryInformation)?.
+      setCharacteristic(this.platform.Characteristic.Manufacturer, 'Envy')
       .setCharacteristic(this.platform.Characteristic.Model, 'Contact Sensor')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
@@ -48,7 +48,7 @@ export class ContactSensor {
   /**
    * Handle requests to get the current value of the "Contact Sensor State" characteristic
    */
-  handleContactSensorStateGet() {
+  handleContactSensorStateGet() : boolean {
     //this.accessory.context.device.log.debug('Triggered handleContactSensorStateGet:', this.contactSensorState);
 
     // set this to a valid value for ContactSensorState
@@ -57,13 +57,13 @@ export class ContactSensor {
     return currentValue;
   }
 
-  setContactSensorState(state: boolean) {
+  setContactSensorState(state: boolean) : void {
     //this.platform.log.debug('Triggered setContactSensorState:', state);
     this.contactSensorState = state;
     this.service.getCharacteristic(this.platform.Characteristic.ContactSensorState).setValue(state);
   }
 
-  getId() {
+  getId() : number {
     return this.accessory.context.device.id;
   }
 }
