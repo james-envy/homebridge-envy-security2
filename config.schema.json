@@ -1,0 +1,175 @@
+{
+  "pluginAlias": "EnvySecurityPlugin",
+  "pluginType": "platform",
+  "singular": false,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "required": true,
+        "default": "Security System"
+      },
+      "alarmType": {
+        "title": "Type",
+        "type": "string",
+        "required": true,
+        "default": "HOMEBRIDGE",
+        "oneOf": [
+          { "title": "Savant", "enum": ["HOMEBRIDGE"] },
+          { "title": "Ness M1", "enum": ["M1"] },
+          { "title": "Ness D8/16", "enum": ["D16"] },
+          { "title": "Paradox MG/SP", "enum": ["MGSP"] }
+        ]
+      },
+      "securityAddress": {
+        "title": "Security Address",
+        "type": "string",
+        "format": "ipv4",
+        "default": "",
+        "required": true
+      },
+      "securityPort": {
+        "title": "Security Address",
+        "type": "integer",
+        "default": 12321,
+        "required": true
+      },
+      "readyZones": {
+        "title": "Ready Zones",
+        "type": "string",
+        "required": false
+      },
+      "alarmZones": {
+        "title": "Alarm Zones",
+        "type": "string",
+        "required": false
+      },
+      "partitions": {
+        "type": "array",
+        "items": {
+          "title": "Partition",
+          "type": "object",
+          "properties": {
+            "number": {
+              "title": "Partition Number",
+              "type": "integer",
+              "required": true
+            },
+            "name": {
+              "title": "Partition Name",
+              "type": "string",
+              "required": true
+            },
+            "code": {
+              "title": "Partition Code",
+              "type": "string",
+              "required": true
+            },
+            "zones": {
+              "type": "array",
+              "items": {
+                "title": "Zone",
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "title": "Zone Number",
+                    "type": "integer",
+                    "required": true
+                  },
+                  "name": {
+                    "title": "Zone Name",
+                    "type": "string",
+                    "required": true
+                  },
+                  "type": {
+                    "title": "Zone Type",
+                    "type": "integer",
+                    "required": true,
+                    "oneOf": [
+                      { "title": "Motion Sensor", "enum": [1] },
+                      { "title": "Contact Sensor", "enum": [2] }
+                    ]
+                  }
+                }
+              },
+              "required": true  
+            },
+            "outputs": {
+              "type": "array",
+              "items": {
+                "title": "Output",
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "title": "Output Number",
+                    "type": "integer",
+                    "required": true
+                  },
+                  "duration": {
+                    "title": "Output Duration",
+                    "type": "integer",
+                    "required": false
+                  },
+                  "name": {
+                    "title": "Output Name",
+                    "type": "string",
+                    "required": true
+                  },
+                  "type": {
+                    "title": "Output Type",
+                    "type": "integer",
+                    "required": true,
+                    "oneOf": [
+                      { "title": "Door", "enum": [3] },
+                      { "title": "Garage Door Opener", "enum": [4] },
+                      { "title": "Switch", "enum": [5] }
+                    ]
+                  },
+                  "target": {
+                    "title": "Output Target",
+                    "type": "integer",
+                    "required": false,
+                    "oneOf": [
+                      { "title": "Closed (Door/Garage Door Opener only)", "enum": [0] },
+                      { "title": "Stopped (Door only)", "enum": [50] },
+                      { "title": "Opened (Door/Garage Door Opener only)", "enum": [100] }
+                    ]
+                  },
+                  "zone": {
+                    "title": "Zone Number",
+                    "type": "integer",
+                    "required": false
+                  }
+                }
+              },
+              "required": true  
+            }
+          }
+        },
+        "required": true  
+      },
+      "tasks": {
+        "type": "array",
+        "items": {
+          "title": "Task",
+          "type": "object",
+          "properties": {
+            "number": {
+              "title": "Task Number",
+              "type": "integer",
+              "required": true
+            },
+            "name": {
+              "title": "Task Name",
+              "type": "string",
+              "required": true
+            }
+          }
+        },
+        "required": true  
+      }
+    }
+  }
+}
