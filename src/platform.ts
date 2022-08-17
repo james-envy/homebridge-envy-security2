@@ -137,7 +137,7 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
     while (i !== -1) {
       const line = _this.client_data.substring(0, i);
       _this.client_data = _this.client_data.substring(i + 1);
-      //_this.log.info('DATA "' + line + '"');
+      _this.log.info('DATA "' + line + '"');
       let result;
       result = line.match(/^Security_system::PartitionStatus\(PartitionNumber = (\d+), CurrentPartitionArmingStatus = (.+)\)$/);
       if (result !== null) {
