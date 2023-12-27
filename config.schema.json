@@ -36,6 +36,19 @@
         "default": 12321,
         "required": true
       },
+      "javaAddress": {
+        "title": "Java Address",
+        "type": "string",
+        "format": "ipv4",
+        "default": "127.0.0.1",
+        "required": true
+      },
+      "javaPort": {
+        "title": "Java Address",
+        "type": "integer",
+        "default": 12321,
+        "required": true
+      },
       "readyZones": {
         "title": "Ready Zones",
         "type": "string",
@@ -66,6 +79,48 @@
               "title": "Partition Code",
               "type": "string",
               "required": true
+            },
+            "stay_mode": {
+              "title": "Home/Stay Mode",
+              "type": "string",
+              "required": true,
+              "default": "ArmStay",
+              "oneOf": [
+                { "title": "Hidden", "enum": ["Hidden"] },
+                { "title": "Away", "enum": ["ArmAway"] },
+                { "title": "Home/Stay", "enum": ["ArmStay"] },
+                { "title": "Home/Stay Instant", "enum": ["ArmStayInstant"] },
+                { "title": "Night", "enum": ["ArmNight"] },
+                { "title": "Night Instant", "enum": ["ArmNightInstant"] }
+              ]
+            },
+            "away_mode": {
+              "title": "Away Mode",
+              "type": "string",
+              "required": true,
+              "default": "ArmAway",
+              "oneOf": [
+                { "title": "Hidden", "enum": ["Hidden"] },
+                { "title": "Away", "enum": ["ArmAway"] },
+                { "title": "Home/Stay", "enum": ["ArmStay"] },
+                { "title": "Home/Stay Instant", "enum": ["ArmStayInstant"] },
+                { "title": "Night", "enum": ["ArmNight"] },
+                { "title": "Night Instant", "enum": ["ArmNightInstant"] }
+              ]
+            },
+            "night_mode": {
+              "title": "Night Mode",
+              "type": "string",
+              "required": true,
+              "default": "Hidden",
+              "oneOf": [
+                { "title": "Hidden", "enum": ["Hidden"] },
+                { "title": "Away", "enum": ["ArmAway"] },
+                { "title": "Home/Stay", "enum": ["ArmStay"] },
+                { "title": "Home/Stay Instant", "enum": ["ArmStayInstant"] },
+                { "title": "Night", "enum": ["ArmNight"] },
+                { "title": "Night Instant", "enum": ["ArmNightInstant"] }
+              ]
             },
             "zones": {
               "type": "array",
@@ -133,7 +188,7 @@
                     "required": false,
                     "oneOf": [
                       { "title": "Closed (Door/Garage Door Opener only)", "enum": [0] },
-                      { "title": "Stopped (Door only)", "enum": [50] },
+                      { "title": "Stopped (Door/Garage Door Opener only)", "enum": [50] },
                       { "title": "Opened (Door/Garage Door Opener only)", "enum": [100] }
                     ]
                   },
