@@ -1,9 +1,9 @@
 /**
  * This is the name of the platform that users will use to register the plugin in the Homebridge config.json
  */
-export const PLATFORM_NAME = 'EnvySecurityPlugin';
+export const PLATFORM_NAME = 'EnvySecurity2Plugin';
 
 /**
  * This must match the name of your plugin as defined the package.json
  */
-export const PLUGIN_NAME = 'homebridge-envy-security';
+export const PLUGIN_NAME = 'homebridge-envy-security2';

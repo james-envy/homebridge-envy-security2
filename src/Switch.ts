@@ -1,6 +1,6 @@
 import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
-import { EnvySecurityPlatform } from './platform';
+import { EnvySecurity2Platform } from './platform';
 
 /**
  * Platform Accessory
@@ -24,7 +24,7 @@ export class Switch {
 
 
   constructor(
-    private readonly platform: EnvySecurityPlatform,
+    private readonly platform: EnvySecurity2Platform,
     private readonly accessory: PlatformAccessory,
   ) {
 

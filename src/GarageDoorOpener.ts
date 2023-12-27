@@ -1,6 +1,6 @@
 import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
-import { EnvySecurityPlatform } from './platform';
+import { EnvySecurity2Platform } from './platform';
 
 /**
  * Platform Accessory
@@ -26,7 +26,7 @@ export class GarageDoorOpener {
 
 
   constructor(
-    private readonly platform: EnvySecurityPlatform,
+    private readonly platform: EnvySecurity2Platform,
     private readonly accessory: PlatformAccessory,
   ) {
 
@@ -119,7 +119,7 @@ export class GarageDoorOpener {
             this.platform.outputs[output].abort();
           }
         }
-        this.platform.client.write('Security_system::OutputOn(OutputNumber = ' + this.getId() + ')\n');
+        this.platform.client.write('Security_system::OutputOn(OutputNumber = ' + this.getId() + '+2)\n');
         if (target !== undefined && target !== this.targetDoorState) {
           this.targetDoorState = target;
           this.service.getCharacteristic(this.platform.Characteristic.TargetDoorState).setValue(target);

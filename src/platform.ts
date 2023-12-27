@@ -1,7 +1,7 @@
 import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
 
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
-import { SecuritySystem } from './SecuritySystem';
+import { SecuritySystem2 } from './SecuritySystem2';
 import { MotionSensor } from './MotionSensor';
 import { ContactSensor } from './ContactSensor';
 import { Door } from './Door';
@@ -24,7 +24,7 @@ enum AccessoryType {
   SWITCH = 5
 }
 
-export class EnvySecurityPlatform implements DynamicPlatformPlugin {
+export class EnvySecurity2Platform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
   public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
 
@@ -45,6 +45,8 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
   client = new Socket;
   private client_data = '';
 
+  private ready_timer;
+  
   // this is used to track restored cached accessories
   public readonly accessories: PlatformAccessory[] = [];
 
@@ -87,9 +89,12 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
       if (this.config.alarmType === 'HOMEBRIDGE') {
         this.client.connect(this.config.securityPort, this.config.securityAddress);
         //this.log.info(this.config.securityPort + ':' + this.config.securityAddress);
+        } else if (typeof(this.config.javaPort) === 'undefined') {
+          this.client.connect(12322);
+          //this.log.info(12321 + '[:' + localhost + ']');
       } else {
-        this.client.connect(12321, '127.0.0.1');
-        //this.log.info('12321:127.0.0.1');
+          this.client.connect(this.config.javaPort, this.config.javaAddress);
+          //this.log.info(this.config.javaPort + ':' + this.config.javaAddress);
       }
     });
   }
@@ -101,14 +106,22 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
 
   on_close(_this: this) : void {
     _this.log.info('CLOSE');
+      if (typeof _this.ready_timer !== undefined) {
+        _this.log.info('*** CANCELLING TIMEOUT ***');
+        clearTimeout(_this.ready_timer);
+        _this.ready_timer = undefined;
+      }
     setTimeout(() => {
       //_this.log.info('alarmType:', _this.config.alarmType);
       if (_this.config.alarmType === 'HOMEBRIDGE') {
         _this.client.connect(_this.config.securityPort, _this.config.securityAddress);
         //_this.log.info(_this.config.securityPort + ':' + _this.config.securityAddress);
+        }  else if (typeof(this.config.javaPort) === 'undefined') {
+          this.client.connect(12322);
+          //this.log.info(12321 + '[:' + localhost + ']');
       } else {
-        _this.client.connect(12321, '127.0.0.1');
-        //_this.log.info('12321:127.0.0.1');
+          _this.client.connect(this.config.javaPort, this.config.javaAddress);
+          //_this.log.info(this.config.javaPort + ':' + this.config.javaAddress);
       }
     }, 10000);
   }
@@ -126,7 +139,7 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
     _this.client.write('Security_system::UpdateSecurityStatus(ControllerType = ' + _this.config.alarmType + ', ControllerAddress = '
       + _this.config.securityAddress + ':' + _this.config.securityPort + ', ReadyZones = ' + _this.config.readyZones
       + ', AlarmZones = ' + _this.config.alarmZones + ')\n');
-    setTimeout(() => {
+      _this.ready_timer = setTimeout(() => {
       _this.on_ready(_this);
     }, 15000);
   }
@@ -142,43 +155,19 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
       result = line.match(/^Security_system::PartitionStatus\(PartitionNumber = (\d+), CurrentPartitionArmingStatus = (.+)\)$/);
       if (result !== null) {
         //_this.log.info('1: ' + result[1] + ' 2: ' + result[2]);
-        const partition: SecuritySystem = _this.partitions[result[1]];
+        const partition: SecuritySystem2 = _this.partitions[result[1]];
         if (partition !== undefined) {
-          switch (result[2]) {
-            case 'Disarmed':
-              partition.setSecuritySystemCurrentState(this.Characteristic.SecuritySystemCurrentState.DISARMED);
-              partition.setSecuritySystemTargetState(this.Characteristic.SecuritySystemTargetState.DISARM);
-              break;
-            case 'ArmedAway':
-              partition.setSecuritySystemCurrentState(this.Characteristic.SecuritySystemCurrentState.AWAY_ARM);
-              partition.setSecuritySystemTargetState(this.Characteristic.SecuritySystemTargetState.AWAY_ARM);
-              break;
-            case 'ArmedStay':
-              partition.setSecuritySystemCurrentState(this.Characteristic.SecuritySystemCurrentState.STAY_ARM);
-              partition.setSecuritySystemTargetState(this.Characteristic.SecuritySystemTargetState.STAY_ARM);
-              break;
-          }
+            partition.setSecuritySystemCurrentState(result[2]);
+            partition.setSecuritySystemTargetState(result[2]);
         }
       }
       result = line.match(/^Security_system::PartitionEvent\(PartitionNumber = (\d+), CurrentPartitionArmingEvent = (.+)\)$/);
       if (result !== null) {
         //_this.log.info('1: ' + result[1] + ' 2: ' + result[2]);
-        const partition: SecuritySystem = _this.partitions[result[1]];
+        const partition: SecuritySystem2 = _this.partitions[result[1]];
         if (partition !== undefined) {
-          switch (result[2]) {
-            case 'Disarmed':
-              partition.setSecuritySystemCurrentState(this.Characteristic.SecuritySystemCurrentState.DISARMED);
-              partition.setSecuritySystemTargetState(this.Characteristic.SecuritySystemTargetState.DISARM);
-              break;
-            case 'ArmedAway':
-              partition.setSecuritySystemCurrentState(this.Characteristic.SecuritySystemCurrentState.AWAY_ARM);
-              partition.setSecuritySystemTargetState(this.Characteristic.SecuritySystemTargetState.AWAY_ARM);
-              break;
-            case 'ArmedStay':
-              partition.setSecuritySystemCurrentState(this.Characteristic.SecuritySystemCurrentState.STAY_ARM);
-              partition.setSecuritySystemTargetState(this.Characteristic.SecuritySystemTargetState.STAY_ARM);
-              break;
-          }
+            partition.setSecuritySystemCurrentState(result[2]);
+            partition.setSecuritySystemTargetState(result[2]);
         }
       }
       result = line.match(/^Security_system::PartitionReady\(PartitionNumber = (\d+), IsPartitionReady = (.+)\)$/);
@@ -188,11 +177,11 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
       result = line.match(/^Security_system::PartitionAlarm\(PartitionNumber = (\d+), IsPartitionAlarmActive = (.+)\)$/);
       if (result !== null) {
         //_this.log.info('1: ' + result[1] + ' 2: ' + result[2]);
-        const partition: SecuritySystem = _this.partitions[result[1]];
+        const partition: SecuritySystem2 = _this.partitions[result[1]];
         if (partition !== undefined) {
           switch (result[2]) {
             case 'true':
-              partition.setSecuritySystemCurrentState(this.Characteristic.SecuritySystemCurrentState.ALARM_TRIGGERED);
+              partition.setSecuritySystemCurrentStateNum(this.Characteristic.SecuritySystemCurrentState.ALARM_TRIGGERED);
               break;
           }
         }
@@ -304,6 +293,9 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
         code: partition.code,
         uniqueId: 'envy-security-partition' + partition.number,
         displayName: partition.name,
+          stay_mode: partition.stay_mode,
+          away_mode: partition.away_mode,
+          night_mode: partition.night_mode,
         log: this.log,
       };
 
@@ -329,7 +321,7 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
 
         // create the accessory handler for the restored accessory
         // this is imported from `platformAccessory.ts`
-        this.partitions[partition.number] = new SecuritySystem(this, existingAccessory);
+        this.partitions[partition.number] = new SecuritySystem2(this, existingAccessory);
 
         // it is possible to remove platform accessories at any time using `api.unregisterPlatformAccessories`, eg.:
         // remove platform accessories when no longer present
@@ -348,7 +340,7 @@ export class EnvySecurityPlatform implements DynamicPlatformPlugin {
 
         // create the accessory handler for the newly create accessory
         // this is imported from `platformAccessory.ts`
-        this.partitions[partition.number] = new SecuritySystem(this, accessory);
+        this.partitions[partition.number] = new SecuritySystem2(this, accessory);
 
         // link the accessory to your platform
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
