@@ -91,7 +91,7 @@ export class EnvySecurity2Platform implements DynamicPlatformPlugin {
           //this.log.info(this.config.securityPort + ':' + this.config.securityAddress);
         } else if (typeof(this.config.javaPort) === 'undefined') {
           this.client.connect(12322);
-          //this.log.info(12321 + '[:' + localhost + ']');
+          //this.log.info(12322 + '[:' + localhost + ']');
         } else {
           this.client.connect(this.config.javaPort, this.config.javaAddress);
           //this.log.info(this.config.javaPort + ':' + this.config.javaAddress);
@@ -118,7 +118,7 @@ export class EnvySecurity2Platform implements DynamicPlatformPlugin {
           //_this.log.info(_this.config.securityPort + ':' + _this.config.securityAddress);
         }  else if (typeof(this.config.javaPort) === 'undefined') {
           this.client.connect(12322);
-          //this.log.info(12321 + '[:' + localhost + ']');
+          //this.log.info(12322 + '[:' + localhost + ']');
         } else {
           _this.client.connect(this.config.javaPort, this.config.javaAddress);
           //_this.log.info(this.config.javaPort + ':' + this.config.javaAddress);
